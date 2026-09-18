@@ -36,12 +36,12 @@ For capabilities that Cloudflare Free does not natively provide at the required 
 | Edge AI | Cloudflare Workers AI | Free allocation | Classification, lightweight inference, fallback |
 | AI routing/observability | Cloudflare AI Gateway | Free core features | Routing, analytics, caching and controls |
 | Background execution | Cloudflare Workflows | Free allowance | Durable multi-step jobs where required |
-| Realtime AI voice | Google Gemini Live API | Free Tier, subject to documented quota/terms | Primary voice/AI experiment |
+| Realtime AI voice | Google Gemini Live API | **Free Tier for selected Live models; quota/terms must be verified** | Primary realtime voice/AI |
 | Productivity connectors | Google Workspace APIs | Standard API quotas | Calendar, Gmail, Drive, Sheets, Docs, Tasks |
 | Source/control connector | GitHub API | API access subject to GitHub limits | Repository and development actions |
 | Interoperability | MCP | Open protocol | Standard connector interface |
 
-Cloudflare Free limits are real limits, not unlimited service. Current official documentation lists Workers Free at 100,000 requests/day, D1 at 5 million row reads/day and 100,000 row writes/day, KV at 100,000 reads/day and 1,000 writes/day, R2 at 10 GB-month plus request allowances, and Durable Objects at 100,000 requests/day with SQLite-backed storage on Free. citeturn0search0turn0search3turn0search7turn0search1
+Cloudflare Free limits are real limits, not unlimited service. Current official documentation lists Workers Free at 100,000 requests/day, D1 at 5 million row reads/day and 100,000 row writes/day, KV at 100,000 reads/day and 1,000 writes/day, R2 at 10 GB-month plus request allowances, and Durable Objects at 100,000 requests/day with SQLite-backed storage on Free.
 
 ---
 
@@ -86,13 +86,13 @@ Free baseline:
 - 50 subrequests/request
 - 64 environment variables/secrets per Worker
 
-The system must treat the daily request quota as a hard operational boundary. citeturn0search0
+The system must treat the daily request quota as a hard operational boundary.
 
 ### 4.2 Cloudflare Pages / Static Assets — frontend
 
 Use Cloudflare for the frontend and static delivery.
 
-Pages Functions are treated as Workers for billing/quota purposes, so the architecture should avoid unnecessarily moving frontend work into server-side Functions. citeturn0search3
+Pages Functions are treated as Workers for billing/quota purposes, so the architecture should avoid unnecessarily moving frontend work into server-side Functions.
 
 ### 4.3 Cloudflare D1 — primary database
 
@@ -104,7 +104,7 @@ Free baseline:
 - 100,000 rows written/day
 - 5 GB stored data
 
-Since September 1, 2026, Free-plan D1 queries fail after the daily row-read or row-write limit is exceeded until reset. Human OS therefore requires indexes, bounded queries, pagination and quota-aware error handling. citeturn0search4turn0search5
+Since September 1, 2026, Free-plan D1 queries fail after the daily row-read or row-write limit is exceeded until reset. Human OS therefore requires indexes, bounded queries, pagination and quota-aware error handling.
 
 Primary data:
 
@@ -125,9 +125,7 @@ Primary data:
 
 Use Durable Objects only when Human OS needs strong per-session coordination or realtime state.
 
-Free currently supports SQLite-backed Durable Objects. The Free allowance includes 100,000 requests/day and 13,000 GB-s/day, with SQLite storage limits aligned to the documented free row/storage allowances. citeturn0search1turn0search6
-
-Do not introduce Durable Objects merely because they exist.
+Free currently supports SQLite-backed Durable Objects. Do not introduce Durable Objects merely because they exist.
 
 ### 4.5 Cloudflare R2 — artifacts
 
@@ -138,8 +136,6 @@ Use R2 for:
 - audio artifacts
 - exports
 - large binary objects
-
-Current Free allowance includes 10 GB-month storage, 1M Class A operations/month and 10M Class B operations/month; Internet egress is free. citeturn0search3
 
 ### 4.6 Cloudflare KV — cache/config
 
@@ -152,13 +148,13 @@ Use KV for:
 
 Do not use KV as the primary relational database.
 
-Current Free allowance includes 100,000 reads/day and 1,000 writes/day. citeturn0search7
-
 ### 4.7 Cloudflare Workers AI — optional edge model
 
-Use Workers AI for lightweight/fallback workloads where the selected model and workload fit the Free allocation.
+Workers AI is an **optional supporting model layer**, not the primary realtime voice engine.
 
-Do not assume Workers AI alone replaces Gemini Live for Human OS realtime voice.
+Use it for lightweight/fallback workloads where the selected model and workload fit the Free allocation.
+
+Do not assume Workers AI replaces Gemini Live for Human OS realtime voice.
 
 ### 4.8 Cloudflare AI Gateway
 
@@ -174,24 +170,62 @@ Responsibilities:
 
 ---
 
-## 5. AI and voice connector
+## 5. AI and voice strategy
 
-### Primary: Gemini Live
+### 5.1 Primary realtime voice: Gemini Live
 
-Gemini Live is the first external AI/voice provider.
+Gemini Live is the first external realtime AI/voice provider.
+
+Current Google documentation lists selected Gemini Live models in the Free Tier, with free input/output for the listed Live models. The Live API supports low-latency audio-to-audio interaction.
+
+This makes Gemini Live the correct **MVP voice experiment** for Human OS under the current cost-first strategy.
+
+However, Free Tier does **not** mean unlimited or permanently free production capacity. Before production, Human OS must verify:
+
+- exact model and current model status
+- account/project eligibility
+- current RPM/TPM/session quotas
+- current data-use terms
+- commercial/product-use terms
+- whether the intended workload remains inside Free Tier
+- verification date
+
+Google also documents that Live sessions are billed based on token usage on paid usage tiers and that accumulated session context can compound usage. Therefore Human OS must cap session duration/context and enforce quota-aware shutdown/fallback.
+
+### 5.2 Why ElevenLabs is NOT the primary MVP voice provider
+
+ElevenLabs remains an **optional future voice provider**, not the baseline.
 
 Reason:
 
-- realtime bidirectional interaction
-- audio-to-audio capability
-- suitable for the first voice-first Human OS vertical slice
-- current Gemini API documentation provides a Free Tier for selected Live models
+- ElevenLabs currently has a Free plan with 10,000 credits/month.
+- The current pricing page lists **Commercial License under the Starter paid plan**, not the Free plan.
+- Therefore the Free plan is useful for experimentation, but it is not the clean default for a production/commercial Human OS deployment.
 
-The integration must be:
+So:
+
+```
+MVP / validation
+    ↓
+Gemini Live Free Tier
+    ↓
+verify quota + terms
+    ↓
+production decision
+
+Optional later:
+ElevenLabs / other voice provider
+    ↓
+only when commercial license,
+quality, latency, or product requirements justify it
+```
+
+If ElevenLabs is ever introduced, it must sit behind the same `VoiceProvider` contract:
 
 ```
 VoiceProvider
 ├── GeminiLiveProvider
+├── ElevenLabsProvider (optional)
 ├── OptionalFallbackProvider
 └── FutureProvider
 ```
@@ -206,20 +240,41 @@ interrupt()
 endSession()
 ```
 
-No Gemini-specific objects may leak into the core domain.
+No Gemini- or ElevenLabs-specific objects may leak into the core domain.
 
-### Commercial guardrail
+### 5.3 Voice architecture decision
 
-Free tier availability is not the same as unlimited commercial usage.
+Human OS does **not** need ElevenLabs to start.
 
-Before production:
+The MVP voice path is:
 
-- verify the exact model
-- verify account eligibility
-- verify current quota
-- verify data-use terms
-- verify commercial terms
-- record verification date
+```
+User microphone
+      ↓
+Human OS voice session
+      ↓
+Gemini Live connector
+      ↓
+Realtime model
+      ↓
+Audio response
+      ↓
+User
+```
+
+Cloudflare remains the application/infrastructure layer around that voice session:
+
+```
+Cloudflare Workers
+      ↓
+Human OS Core
+      ↓
+VoiceProvider Contract
+      ↓
+Gemini Live
+```
+
+If Gemini Live later becomes unsuitable because of quota, commercial terms, quality, latency, regional availability, or cost, the provider can be swapped without redesigning Human OS Core.
 
 ---
 
@@ -526,7 +581,7 @@ Do not add these merely for completeness:
 - browser automation as a default transport
 - multiple cloud providers
 
-These remain future adapters only.
+ElevenLabs is intentionally **not** an MVP dependency. It remains an optional adapter.
 
 Neon may be introduced later if D1 becomes a concrete technical constraint. A second cloud provider may be introduced only when a measurable requirement justifies it.
 
@@ -569,7 +624,7 @@ Neon may be introduced later if D1 becomes a concrete technical constraint. A se
 
 ### Phase 0 — External stack validation
 
-Validate only:
+Validate only the components that can block the MVP:
 
 1. Cloudflare account
 2. Worker deployment
@@ -579,12 +634,16 @@ Validate only:
 6. Durable Object only if session coordination requires it
 7. Workers AI availability
 8. AI Gateway
-9. Gemini Live access
+9. **Gemini Live access + actual Free Tier voice test**
 10. Google OAuth
 11. Calendar read
 12. Gmail read
 13. Drive read
 14. GitHub read
+15. **Commercial/data-use/terms check for Gemini Live**
+16. **Record actual quotas and observed limits**
+
+ElevenLabs is **not a Phase 0 blocker**. It is only validated later if Gemini Live fails the MVP acceptance criteria.
 
 Record actual results in the repository.
 
@@ -630,6 +689,7 @@ Add:
 - more GitHub actions
 - MCP transport
 - event-driven Workspace integrations
+- optional alternative voice provider if justified
 
 ### Phase 3 — Reliability
 
@@ -656,6 +716,7 @@ The baseline is accepted only when:
 - [ ] R2 artifact flow works within Free allowance.
 - [ ] KV cache flow works within Free allowance.
 - [ ] Gemini Live voice session works under the verified account/model quota.
+- [ ] Gemini Live intended use is documented against current data-use/commercial terms.
 - [ ] Google OAuth works with least-privilege scopes.
 - [ ] Calendar connector can read events.
 - [ ] Gmail connector can read/search mail.
@@ -666,6 +727,7 @@ The baseline is accepted only when:
 - [ ] No paid upgrade happens automatically.
 - [ ] Provider-specific SDK types do not leak into the core.
 - [ ] Audit events exist for external writes.
+- [ ] ElevenLabs is not required for MVP acceptance.
 
 ---
 
@@ -704,7 +766,7 @@ Connector Contract
        ↓
 Official API / Official MCP
        ↓
-Gemini / Google Workspace / GitHub / Future providers
+Gemini Live / Google Workspace / GitHub / Future providers
 ```
 
 The product is therefore **not** "a Gemini app" or "a Cloudflare app".
