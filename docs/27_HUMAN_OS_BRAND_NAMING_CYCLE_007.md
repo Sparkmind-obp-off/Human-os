@@ -15,7 +15,7 @@
 
 Cycle 007 was executed as a **Brand Lock Gate**, not as a naming-generation cycle. Its purpose was to determine whether the Cycle 006 shortlist — **KAEVOS**, **KITHVANE**, **THELVRA** — can advance toward a commercial brand lock on the basis of genuinely new professional trademark-clearance evidence obtained since Cycle 006 closed.
 
-The project record contains **no professional trademark-clearance evidence** for any finalist. Separately, the project owner reports completing manual checks of **DJKI/PDKI, USPTO, EUIPO, and WHOIS** for KAEVOS and considers the result clean/safe for the intended direction. These checks are classified as **USER-REPORTED / SELF-VERIFIED**, not professional legal clearance. No trademark attorney opinion, formal counsel search report, filing record, or qualified linguistic validation has been added to the project.
+The project record contains **no professional trademark-clearance evidence** for any finalist. Separately, the project owner reports completing manual checks of **DJKI/PDKI, USPTO, EUIPO, and WHOIS** for KAEVOS and considers the result clean/safe for the intended direction. These checks are classified as **USER-REPORTED / SELF-VERIFIED**, not professional legal clearance. The project owner has also acquired/registered **kaevos.biz.id** for the KAEVOS direction; this is recorded as **USER-REPORTED / SELF-VERIFIED DOMAIN OWNERSHIP**, not trademark clearance. No trademark attorney opinion, formal counsel search report, filing record, or qualified linguistic validation has been added to the project.
 
 Under the master-prompt decision framework (Section 5, Path B; Section 20, Branch B), the correct and disciplined outcome is:
 
@@ -150,7 +150,7 @@ Per Section 15 of the master prompt, domain status for each finalist across `[NA
 
 | Candidate | .com | .ai | .io | .id | Notes |
 |---|---|---|---|---|---|
-| KAEVOS | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | To be verified via registrar/WHOIS as part of the professional handoff. |
+| KAEVOS | UNKNOWN | UNKNOWN | UNKNOWN | **USER-REPORTED: kaevos.biz.id acquired** | `.biz.id` acquisition is user-reported/self-verified; `.com/.ai/.io` and authoritative registrar details remain to be verified. |
 | KITHVANE | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | To be verified via registrar/WHOIS as part of the professional handoff. |
 | THELVRA | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | To be verified via registrar/WHOIS as part of the professional handoff. |
 
@@ -270,7 +270,7 @@ The following gaps are explicit and material. Each must be closed by qualified p
 1. Absence of a scoped attorney trademark-clearance opinion for KAEVOS, KITHVANE, and THELVRA in Indonesia, United States, and European Union across Class 9 and Class 42.
 2. Absence of formally commissioned registry search reports covering DJKI/PDKI, USPTO, EUIPO, and (where strategically warranted) WIPO Madrid and UK IPO.
 3. Absence of direct authoritative registry verification for KAIROS (KAEVOS conflict question), KITH (KITHVANE conflict question), and HELVAR (THELVRA conflict question).
-4. Absence of verified domain status for each finalist across `.com`, `.ai`, `.io`, and `.id`.
+4. Absence of verified domain status for each finalist across `.com`, `.ai`, `.io`, and `.id`; **kaevos.biz.id acquisition is user-reported / self-verified but is not treated as authoritative registrar evidence in this report.**
 5. Absence of verified developer-namespace and app-store position (GitHub, npm, PyPI, App Store, Google Play) for each finalist.
 6. Absence of professional linguistic assessment (Indonesian + English) for each finalist.
 7. Absence of confirmed ownership entity for filing (intended owner recorded as SparkMind, to be formalised at engagement).
@@ -283,7 +283,7 @@ The following gaps are explicit and material. Each must be closed by qualified p
 2. **Commission full trademark search reports** for KAEVOS, KITHVANE, and THELVRA covering Class 9 and Class 42 (and adjacent classes 35, 38, 45 where counsel judges appropriate).
 3. **Request counsel's explicit written conclusion** per candidate: *Cleared / Cleared-with-conditions / Not cleared*, with reasoning, cited marks, and limitations recorded per Section 7 of the master prompt.
 4. **Commission a professional linguistic review** (Indonesian + English) covering pronunciation stability, first-hearing recognition, spelling predictability, phone-call performance, and person/place-name perception risk.
-5. **Perform authoritative domain and namespace verification** in parallel with counsel: registrar/WHOIS for `.com`, `.ai`, `.io`, `.id`; direct checks on GitHub, npm, PyPI, App Store, Google Play; social identity on Instagram, X, Threads, LinkedIn, YouTube, TikTok.
+5. **Perform authoritative domain and namespace verification** in parallel with counsel: registrar/WHOIS for `.com`, `.ai`, `.io`, `.id`; preserve **kaevos.biz.id** as the current user-owned/registered brand asset and verify its registrar status, DNS control, renewal date, and ownership details; direct checks on GitHub, npm, PyPI, App Store, Google Play; social identity on Instagram, X, Threads, LinkedIn, YouTube, TikTok.
 6. **Formalise the intended filing entity** (SparkMind or successor vehicle) and record the ownership decision in the project record before any filing is initiated.
 7. **On receipt of professional findings**, execute the appropriate Cycle 007-defined branch — Branch A (advance toward lock), Branch C (evaluate survivors only), or Branch D (trigger Attorney-Guided Generation) — and record the outcome as an update to this document or as Cycle 008, per Section 28 trigger conditions.
 
@@ -299,7 +299,13 @@ Finally, Cycle 007 establishes a deliberate separation between **strategic lock*
 
 ---
 
-## 23. Cycle 008 Trigger Conditions
+## 23. Domain Asset Position
+
+The acquisition of **kaevos.biz.id** is now treated as a concrete project asset for the provisionally locked KAEVOS direction. It does **not** convert the strategic lock into legal trademark clearance and does not change the professional-clearance requirement. The immediate execution implication is that KAEVOS can move from naming exploration into **brand asset setup and controlled validation**, while `.biz.id` remains a supporting domain rather than evidence of exclusive naming rights.
+
+Recommended operational checks for the domain asset: confirm registrar ownership, renewal/expiry date, DNS control, HTTPS readiness, email/DKIM/SPF/DMARC plan if email will be used, and whether the domain should be a primary landing domain or a redirect/defensive asset after `.com`/other strategic domains are assessed.
+
+## 24. Cycle 008 Trigger Conditions
 
 Cycle 008 must **not** begin automatically. Cycle 008 is triggered only when all of the following are true:
 
