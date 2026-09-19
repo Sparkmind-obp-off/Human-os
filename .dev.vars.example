@@ -1,0 +1,8 @@
+# Safe, non-secret local defaults. Copy to .dev.vars if needed.
+ENVIRONMENT=local
+KAEVOS_VERSION=0.1.0
+LLM_PROVIDER=mock
+CONNECTOR_MODE=disabled
+REQUEST_TIMEOUT_MS=10000
+
+# Never commit credentials. Phase 1 does not require provider secrets.
