@@ -68,14 +68,15 @@ No credential values are committed.
 
 ## URLs
 
-- **Production:** pending verified BYOK deployment
+- **Production:** https://kaevos.pages.dev
+- **Health:** https://kaevos.pages.dev/v1/health
 - **GitHub:** https://github.com/Sparkmind-obp-off/Kaevos
 
 ## Deployment
 
 - **Platform:** Cloudflare Pages/Workers
 - **Production branch:** `main`
-- **Status:** pending deployment verification
+- **Status:** active; canonical health endpoint verified on 2026-09-19
 - **Configuration:** `wrangler.jsonc`
 
 ## Not Yet Implemented
